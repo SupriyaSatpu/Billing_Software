@@ -62,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryEntity.builder()
                 .categoryId(UUID.randomUUID().toString())
                 .name(request.getName())
-                .description(request.getBgColor())
+                .description(request.getDescription())
                 .bgColor(request.getBgColor())
                 .build();
     }
