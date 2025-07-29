@@ -22,4 +22,6 @@ public class CategoryResponse {
     private Timestamp updatedAt;
 
     private String imgUrl;
+
+    private Integer items;
 }
