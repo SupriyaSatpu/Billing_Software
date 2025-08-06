@@ -17,9 +17,9 @@ public interface OrderService {
 
     OrderResponse verifyPayment(PaymentVerificationRequest request);
 
-    //Double sumSalesByDate(LocalDate date);
+    Double sumSalesByDate(LocalDate date);
 
-    //Long countByOrderDate(LocalDate date);
+    Long countByOrderDate(LocalDate date);
 
-    //List<OrderResponse> findRecentOrders();
+    List<OrderResponse> findRecentOrders();
 }
