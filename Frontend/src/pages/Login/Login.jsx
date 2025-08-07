@@ -1,4 +1,4 @@
-import 'Login.css';
+import './Login.css';
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
