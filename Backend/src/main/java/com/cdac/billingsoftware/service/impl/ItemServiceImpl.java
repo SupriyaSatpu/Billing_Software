@@ -32,33 +32,11 @@ public class ItemServiceImpl implements ItemService {
     private final CategoryRepository categoryRepository;  // Repository for category data
     private final ItemRepository itemRepository;  // Repository for item data
 
-    /**
-     * Adds a new item with an uploaded image.
-     * - Saves image to local "uploads" directory
-     * - Links item to an existing category
-     * - Stores item details in database
-     */
-
+    // Adds a new item by uploading its image, validating category, saving to DB, and returning item details.
     @Override
     public ItemResponse add(ItemRequest request, MultipartFile file) throws IOException {
-        // Generate a unique file name
-        String fileName = UUID.randomUUID().toString()+"."+ StringUtils.getFilenameExtension(file.getOriginalFilename());
-
-        // Create uploads directory if it doesn't exist
-        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
-        Files.createDirectories(uploadPath);
-
-        // Copy uploaded file to uploads directory
-        Path targetLocation = uploadPath.resolve(fileName);
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-        // Generate image URL for accessing the uploaded file
-        String imgUrl = "http://localhost:8080/api/v1.0/uploads/"+fileName;
-
-        // Convert request DTO to entity
+        String imgUrl = fileUploadService.uploadFile(file);
         ItemEntity newItem = convertToEntity(request);
-
-        // Validate category and set it to the item
         CategoryEntity existingCategory = categoryRepository.findByCategoryId(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found: "+request.getCategoryId()));
         newItem.setCategory(existingCategory);
@@ -104,30 +82,19 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Deletes an item by its itemId.
-     * - Removes item image from uploads folder
-     * - Deletes item record from database
-     */
+
+     // Deletes an item by its itemId.
+
     @Override
     public void deleteItem(String itemId) {
 
         // Find existing item or throw exception
         ItemEntity existingItem = itemRepository.findByItemId(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found: "+itemId));
-
-        // Extract image file name from image URL
-        String imgUrl = existingItem.getImgUrl();
-        String fileName = imgUrl.substring(imgUrl.lastIndexOf("/")+1);
-        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
-        Path filePath = uploadPath.resolve(fileName);
-
-        // Delete image file and then delete item record
-        try {
-            Files.deleteIfExists(filePath);
+        boolean isFileDelete = fileUploadService.deleteFile(existingItem.getImgUrl());
+        if(isFileDelete){
             itemRepository.delete(existingItem);
-        } catch (IOException e) {
-            e.printStackTrace();
+        }else{
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to delete the image");
         }
     }
