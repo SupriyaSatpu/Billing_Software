@@ -1,6 +1,6 @@
 import './Menubar.css';
 import {assets} from "../../assets/assets.js";
-import {Link, Links, useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useContext} from "react";
 import {AppContext} from "../../context/AppContext.jsx";
 
@@ -64,7 +64,7 @@ const Menubar = () => {
                             <img src={assets.profile} alt="" height={32} width={32} />
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li>
+                            {/*<li>
                                 <a href="#!" className="dropdown-item">
                                     Settings
                                 </a>
@@ -77,7 +77,19 @@ const Menubar = () => {
                                 <a href="#!" className="dropdown-item" onClick={logout}>
                                     Logout
                                 </a>
+                            </li>*/}
+                            <li>
+                                <a href="#!" className="dropdown-item">Settings</a>
                             </li>
+                             <li>
+                                 <a href="#!" className="dropdown-item">Activity log</a>
+                            </li>
+                            <li>
+                                 <hr className="dropdown-divider" />
+                            </li>
+                            <li>
+                                 <a href="#!" className="dropdown-item" onClick={logout}>Logout</a>
+                             </li>
                         </ul>
                     </li>
                 </ul>

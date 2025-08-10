@@ -1,19 +1,24 @@
 import './Login.css';
+import {useContext, useState} from "react";
+import toast from "react-hot-toast";
+import {login} from "../../Service/AuthService.js";
+import {useNavigate} from "react-router-dom";
+import {AppContext} from "../../context/AppContext.jsx";
 
 const Login = () => {
+    const {setAuthData} = useContext(AppContext);
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({
-        email: '',
-        password: ''
+        email: "",
+        password: "",
     });
 
     const onChangeHandler = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setData({
-            ...data,
-            [name]: value
-        });
+        setData((data) => ({...data, [name]: value}));
+    }
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
@@ -32,8 +37,9 @@ const Login = () => {
             toast.error("Email/Password Invalid");
         } finally {
             setLoading(false);
-        } 
+        }
     }
+
     return (
         <div className="bg-light d-flex align-items-center justify-content-center vh-100 login-background">
             <div className="card shoadow-lg w-100" style={{maxWidth: '480px'}}>
@@ -69,7 +75,6 @@ const Login = () => {
             </div>
         </div>
     )
-}
 }
 
 export default Login;
